@@ -6,19 +6,16 @@ import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.common.util.SecretGenerator;
-import org.keycloak.models.AuthenticationExecutionModel;
-import org.keycloak.models.AuthenticatorConfigModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.UserModel;
+import org.keycloak.models.*;
+import org.keycloak.services.managers.Auth;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.theme.Theme;
-
 import java.util.Locale;
 
 /**
  * @author Niko Köbler, https://www.n-k.de, @dasniko
  */
+
 public class SmsAuthenticator implements Authenticator {
 
 	private static final String MOBILE_NUMBER_FIELD = "mobile_number";
@@ -46,8 +43,8 @@ public class SmsAuthenticator implements Authenticator {
 			Locale locale = session.getContext().resolveLocale(user);
 			String smsAuthText = theme.getMessages(locale).getProperty("smsAuthText");
 			String smsText = String.format(smsAuthText, code, Math.floorDiv(ttl, 60));
-
-			SmsServiceFactory.get(config.getConfig()).send(mobileNumber, smsText);
+			SmsServiceFactory ssf = new SmsServiceFactory();
+			ssf.get(config.getConfig()).send(mobileNumber, smsText);
 
 			context.challenge(context.form().setAttribute("realm", context.getRealm()).createForm(TPL_CODE));
 		} catch (Exception e) {
@@ -59,6 +56,10 @@ public class SmsAuthenticator implements Authenticator {
 
 	@Override
 	public void action(AuthenticationFlowContext context) {
+		if (context.getHttpRequest().getDecodedFormParameters().containsKey("regenerate")) {
+			regenerateCode(context);
+			return;
+		}
 		String enteredCode = context.getHttpRequest().getDecodedFormParameters().getFirst(SmsConstants.CODE);
 
 		AuthenticationSessionModel authSession = context.getAuthenticationSession();
@@ -108,11 +109,47 @@ public class SmsAuthenticator implements Authenticator {
 	public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) {
 		// this will only work if you have the required action from here configured:
 		// https://github.com/dasniko/keycloak-extensions-demo/tree/main/requiredaction
-		user.addRequiredAction("mobile-number-ra");
+		/*
+		AuthenticatorConfigModel config = realm.getAuthenticatorConfigByAlias("sms-2fa");
+		RoleModel whitelistRole = realm.getRole(config.getConfig().get("requiredFor"));
+		if(user.hasRole(whitelistRole)){
+			user.addRequiredAction(MobileNumberRequiredAction.PROVIDER_ID);
+		}
+		*/
+		user.addRequiredAction(MobileNumberRequiredAction.PROVIDER_ID);
 	}
 
 	@Override
 	public void close() {
 	}
+	public void regenerateCode(AuthenticationFlowContext context) {
+		AuthenticatorConfigModel config = context.getAuthenticatorConfig();
+		KeycloakSession session = context.getSession();
+		UserModel user = context.getUser();
 
+		String mobileNumber = user.getFirstAttribute(MOBILE_NUMBER_FIELD);
+
+		int length = Integer.parseInt(config.getConfig().get(SmsConstants.CODE_LENGTH));
+		int ttl = Integer.parseInt(config.getConfig().get(SmsConstants.CODE_TTL));
+
+		String code = SecretGenerator.getInstance().randomString(length, SecretGenerator.DIGITS);
+		AuthenticationSessionModel authSession = context.getAuthenticationSession();
+		authSession.setAuthNote(SmsConstants.CODE, code);
+		authSession.setAuthNote(SmsConstants.CODE_TTL, Long.toString(System.currentTimeMillis() + (ttl * 1000L)));
+
+		try {
+			Theme theme = session.theme().getTheme(Theme.Type.LOGIN);
+			Locale locale = session.getContext().resolveLocale(user);
+			String smsAuthText = theme.getMessages(locale).getProperty("smsAuthText");
+			String smsText = String.format(smsAuthText, code, Math.floorDiv(ttl, 60));
+			SmsServiceFactory ssf = new SmsServiceFactory();
+			ssf.get(config.getConfig()).send(mobileNumber, smsText);
+
+			context.challenge(context.form().setAttribute("realm", context.getRealm()).createForm(TPL_CODE));
+		} catch (Exception e) {
+			context.failureChallenge(AuthenticationFlowError.INTERNAL_ERROR,
+				context.form().setError("smsAuthSmsNotSent", e.getMessage())
+					.createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
+		}
+	}
 }

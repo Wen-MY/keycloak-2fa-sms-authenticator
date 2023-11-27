@@ -11,12 +11,17 @@ import java.util.Map;
 @Slf4j
 public class SmsServiceFactory {
 
+	public SmsServiceFactory(){
+		log.info(String.format("A new SMS Service Factory is created"));
+	}
+
 	public static SmsService get(Map<String, String> config) {
+		//log.info(String.format("A new SMS Service Factory is created"));
 		if (Boolean.parseBoolean(config.getOrDefault(SmsConstants.SIMULATION_MODE, "false"))) {
 			return (phoneNumber, message) ->
 				log.warn(String.format("***** SIMULATION MODE ***** Would send SMS to %s with text: %s", phoneNumber, message));
 		} else {
-			return new AwsSmsService(config);
+			return new ApiSmsService(config);
 		}
 	}
 

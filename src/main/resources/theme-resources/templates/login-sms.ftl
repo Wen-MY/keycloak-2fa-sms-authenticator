@@ -3,7 +3,7 @@
 	<#if section = "header">
 		${msg("smsAuthTitle",realm.displayName)}
 	<#elseif section = "show-username">
-		<h1>${msg("smsAuthCodeTitle", realm.displayName)}</h1>
+		<h1>${msg("SMS 2FA", realm.displayName)}</h1>
 	<#elseif section = "form">
 		<form id="kc-sms-code-login-form" class="${properties.kcFormClass!}" action="${url.loginAction}" method="post">
 			<div class="${properties.kcFormGroupClass!}">
@@ -17,6 +17,7 @@
 			<div class="${properties.kcFormGroupClass!} ${properties.kcFormSettingClass!}">
 				<div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
 					<input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" type="submit" value="${msg("doSubmit")}"/>
+					<button class="${properties.kcButtonClass!} ${properties.kcButtonSecondaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" type="submit" name="regenerate" value="true">${msg("regenerateOTP")}</button>
 				</div>
 			</div>
 		</form>
@@ -24,3 +25,9 @@
 		${msg("smsAuthInstruction")}
 	</#if>
 </@layout.registrationLayout>
+<script>
+    function regenerateOTP() {
+        // Trigger the OTP regeneration by submitting the hidden form
+        document.getElementById('kc-sms-regenerate-form').submit();
+    }
+</script>
