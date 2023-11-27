@@ -72,7 +72,7 @@ Ensure the following prerequisites are met before using this Keycloak plugin:
 3. **Configure SMS 2FA Authentication:**
    - Navigate to the realm and select "Authentication" in the left sidebar.
    - Duplicate a the built-in browser flow and add the new step for the browser flow, SMS Authentication.
-   - **MUST the Step Alias Name with "sms-2fa-auth" , else it will won't work as intended.
+   - **MUST** the Step Alias Name with "sms-2fa-auth" , else it will won't work as intended.
    - Configure other necessary settings or use the simulation for testing purpose.
    - Click on the action button and bind the authentication flow to include the SMS 2FA provider.
 
