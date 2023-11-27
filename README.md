@@ -1,17 +1,86 @@
 # Keycloak 2FA SMS Authenticator
 
-Keycloak Authentication Provider implementation to get a 2nd-factor authentication with a OTP/code/token send via SMS (through AWS SNS).
+Keycloak Authentication Provider implementation to get a 2nd-factor authentication with a OTP/code/token send via SMS through self-hosted SMSC server.
 
-_Demo purposes only!_
+# Keycloak SMS 2FA Authentication Provider
 
-Unfortunately, I don't have a real readme yet.
-Blame on me!
+## Overview
 
-But, for now, you can at least read my **blog post** about this autenticator here:  
-https://www.n-k.de/2020/12/keycloak-2fa-sms-authentication.html
+This Keycloak plugin adds a second-factor authentication method using a One-Time Password (OTP) sent via SMS through a self-hosted SMSC (Short Message Service Center) server. This enhances the security of user authentication in your Keycloak instance.
 
-Or, just watch my **video** about this 2FA SMS SPI:
+## Prerequisites
 
-[![](http://img.youtube.com/vi/GQi19817fFk/maxresdefault.jpg)](http://www.youtube.com/watch?v=GQi19817fFk "")
+Ensure the following prerequisites are met before using this Keycloak plugin:
 
-[![](http://img.youtube.com/vi/FHJ5WOx1es0/maxresdefault.jpg)](http://www.youtube.com/watch?v=FHJ5WOx1es0 "")
+- JDK 17
+- Maven (latest version)
+- Keycloak v22.0.5 (or compatible version)
+
+## Build and Installation
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/your-username/keycloak-sms-2fa.git
+   cd keycloak-sms-2fa
+   ```
+
+2. **Build the Keycloak Plugin:**
+   ```bash
+   mvn clean package
+   ```
+
+   This command compiles the code and packages the Keycloak plugin into a JAR file.
+
+3. **Navigate to the Target Directory:**
+   ```bash
+   cd target
+   ```
+
+   In this directory, you will find a JAR file named `keycloak-sms-2fa.jar`.
+
+4. **Copy the JAR file to Keycloak Provider Directory:**
+   Copy the `keycloak-sms-2fa.jar` file to the Keycloak Provider directory. Replace `keycloakRootPath` with the actual path to your Keycloak installation.
+
+   ```bash
+   cp keycloak-sms-2fa.jar keycloakRootPath/providers/
+   ```
+
+5. **Build and Start Keycloak:**
+   Navigate to the Keycloak bin directory and run the build script:
+
+   ```bash
+   cd keycloakRootPath/bin
+   ./kc.sh build
+   ```
+
+   After the build is complete, start Keycloak in development mode:
+
+   ```bash
+   ./kc.sh start-dev
+   ```
+
+   Keycloak will start, and the SMS 2FA authentication provider will be available for configuration.
+
+## Configuration
+
+1. **Access Keycloak Admin Console:**
+   Open your browser and go to `http://localhost:8080/` (OR replace with your Keycloak URL).
+
+2. **Log in to the Admin Console:**
+   Log in with your administrator credentials.
+
+3. **Configure SMS 2FA Authentication:**
+   - Navigate to the realm and select "Authentication" in the left sidebar.
+   - Duplicate a the built-in browser flow and add the new step for the browser flow, SMS Authentication.
+   - **MUST the Step Alias Name with "sms-2fa-auth" , else it will won't work as intended.
+   - Configure other necessary settings or use the simulation for testing purpose.
+   - Click on the action button and bind the authentication flow to include the SMS 2FA provider.
+
+4. **Test the SMS 2FA:**
+   - Log in with a user account that is configured to use the SMS 2FA provider.
+   - Follow the prompts to enter the OTP/code/token sent via SMS.
+
+## Additional Information
+
+- Customize the SMSC server settings and SMS templates in the source code as needed.
+- For more details on Keycloak authentication configuration, refer to the [Keycloak Documentation](https://www.keycloak.org/documentation.html).
