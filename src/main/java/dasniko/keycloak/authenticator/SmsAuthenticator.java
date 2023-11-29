@@ -44,7 +44,7 @@ public class SmsAuthenticator implements Authenticator {
 			String smsAuthText = theme.getMessages(locale).getProperty("smsAuthText");
 			String smsText = String.format(smsAuthText, code, Math.floorDiv(ttl, 60));
 			SmsServiceFactory ssf = new SmsServiceFactory();
-			ssf.get(config.getConfig()).send(mobileNumber, smsText);
+			ssf.get(config.getConfig()).send(mobileNumber, smsText,session);
 
 			context.challenge(context.form().setAttribute("realm", context.getRealm()).createForm(TPL_CODE));
 		} catch (Exception e) {
@@ -143,7 +143,7 @@ public class SmsAuthenticator implements Authenticator {
 			String smsAuthText = theme.getMessages(locale).getProperty("smsAuthText");
 			String smsText = String.format(smsAuthText, code, Math.floorDiv(ttl, 60));
 			SmsServiceFactory ssf = new SmsServiceFactory();
-			ssf.get(config.getConfig()).send(mobileNumber, smsText);
+			ssf.get(config.getConfig()).send(mobileNumber, smsText,session);
 
 			context.challenge(context.form().setAttribute("realm", context.getRealm()).createForm(TPL_CODE));
 		} catch (Exception e) {

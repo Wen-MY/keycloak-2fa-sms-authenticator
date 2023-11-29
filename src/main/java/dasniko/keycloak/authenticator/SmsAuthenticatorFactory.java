@@ -64,8 +64,9 @@ public class SmsAuthenticatorFactory implements AuthenticatorFactory {
 			new ProviderConfigProperty(SmsConstants.SENDER_ID, "SenderId", "The sender ID is displayed as the message sender on the receiving device.", ProviderConfigProperty.STRING_TYPE, "Keycloak"),
 			new ProviderConfigProperty(SmsConstants.SIMULATION_MODE, "Simulation mode", "In simulation mode, the SMS won't be sent, but printed to the server logs", ProviderConfigProperty.BOOLEAN_TYPE, true),
 			new ProviderConfigProperty(SmsConstants.CODE_TTR,"Time-to-regenerate","The time to regenerate in seconds for the code can be regenerate new",ProviderConfigProperty.STRING_TYPE,"30"),
-			new ProviderConfigProperty(SmsConstants.API_GATEWAY,"API URL gateway", "The IP and port to your SMPP server",ProviderConfigProperty.STRING_TYPE,"http://127.0.0.1:2275/sent"),
+			new ProviderConfigProperty(SmsConstants.API_URL,"URL of API gateway", "The URL connected to your API server hosted on",ProviderConfigProperty.STRING_TYPE,"127.0.0.1"),
 			new ProviderConfigProperty(SmsConstants.REQUIRED_FOR,"Required for enforced 2FA","All users with the here selected role are forced to use 2FA.", ProviderConfigProperty.ROLE_TYPE, null)
+
 		);
 	}
 

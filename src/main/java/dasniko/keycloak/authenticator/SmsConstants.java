@@ -14,7 +14,7 @@ public class SmsConstants {
 	public static String SENDER_ID = "senderId";
 	public static String SIMULATION_MODE = "simulation";
 	public static String CODE_TTR = "ttr";
-	public static String API_GATEWAY = "apiGateway";
+	public static String API_URL = "apiUrl";
 	public static String REQUIRED_FOR = "requiredFor";
 	public static final String RECEIVER_ATTRIBUTE = "destinationAddress";
 	public static final String SENDER_ATTRIBUTE = "sourceAddress";

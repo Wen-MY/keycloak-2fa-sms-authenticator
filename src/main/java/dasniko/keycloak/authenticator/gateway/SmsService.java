@@ -1,5 +1,7 @@
 package dasniko.keycloak.authenticator.gateway;
 
+import org.keycloak.models.KeycloakSession;
+
 import java.util.Map;
 
 /**
@@ -7,6 +9,6 @@ import java.util.Map;
  */
 public interface SmsService {
 
-	void send(String phoneNumber, String message);
+	void send(String phoneNumber, String message,KeycloakSession session);
 
 }

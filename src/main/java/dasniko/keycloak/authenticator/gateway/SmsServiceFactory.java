@@ -2,6 +2,7 @@ package dasniko.keycloak.authenticator.gateway;
 
 import dasniko.keycloak.authenticator.SmsConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.models.KeycloakSession;
 
 import java.util.Map;
 
@@ -12,13 +13,13 @@ import java.util.Map;
 public class SmsServiceFactory {
 
 	public SmsServiceFactory(){
-		log.info(String.format("A new SMS Service Factory is created"));
+		log.info("A new SMS Service Factory is created");
 	}
 
 	public static SmsService get(Map<String, String> config) {
 		//log.info(String.format("A new SMS Service Factory is created"));
 		if (Boolean.parseBoolean(config.getOrDefault(SmsConstants.SIMULATION_MODE, "false"))) {
-			return (phoneNumber, message) ->
+			return (phoneNumber, message ,session) ->
 				log.warn(String.format("***** SIMULATION MODE ***** Would send SMS to %s with text: %s", phoneNumber, message));
 		} else {
 			return new ApiSmsService(config);
