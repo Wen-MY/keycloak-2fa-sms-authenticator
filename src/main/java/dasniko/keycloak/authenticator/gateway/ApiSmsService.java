@@ -9,25 +9,15 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.keycloak.connections.httpclient.HttpClientProvider;
 import org.keycloak.models.KeycloakSession;
 
-import javax.net.ssl.*;
-
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-
-import java.security.cert.CertificateException;
 import java.util.Map;
-import java.io.InputStream;
+
 @Slf4j
 public class ApiSmsService implements SmsService {
 	private final String apiUrl;
 	private final String senderId;
 
 	ApiSmsService(Map<String, String> config){
-		this.apiUrl = config.getOrDefault(SmsConstants.API_URL,"http://localhost/sent");
+		this.apiUrl = config.getOrDefault(SmsConstants.API_URL,"http://localhost") + "/sent";
 		this.senderId = config.getOrDefault(SmsConstants.SENDER_ID,"Keycloak");
 
 
