@@ -79,6 +79,19 @@ Ensure the following prerequisites are met before using this Keycloak plugin:
 4. **Test the SMS 2FA:**
    - Log in with a user account that is configured to use the SMS 2FA provider.
    - Follow the prompts to enter the OTP/code/token sent via SMS.
+## SSL Configuration
+If you want apply http request with secure socket layer (HTTPS). You need to put the java keystore file of your reverse proxy server into `keycloakRootPath/conf` and you need to config the keycloak by adding a section for keystore spi.
+```bash
+nano keycloakRootPath/conf/keycloak.conf
+#add this section to the configuration file
+
+# Keycloak Truststore Configuration
+spi-truststore-file-file=/keycloak/keycloak-22.0.5/conf/NAME_OF_YOUR_KEYSTORE.jks <-- your keystore file
+spi-truststore-file-password=password <-- your keystore file password if applicable
+spi-truststore-file-hostname-verification-policy=ANY
+
+```
+After adding the section of code into the keycloak configuration file , you need to rebuild the keycloak before starting the keycloak
 
 ## Additional Information
 
