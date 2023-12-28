@@ -1,9 +1,6 @@
 package dasniko.keycloak.authenticator;
 
 import lombok.experimental.UtilityClass;
-import org.keycloak.models.RoleModel;
-
-import javax.management.relation.Role;
 
 @UtilityClass
 public class SmsConstants {
@@ -19,4 +16,9 @@ public class SmsConstants {
 	public static final String RECEIVER_ATTRIBUTE = "destinationAddress";
 	public static final String SENDER_ATTRIBUTE = "sourceAddress";
 	public static final String MSG_ATTRIBUTE = "message";
+	public static final String LAST_GENERATION_TIME = "lastGenerationTime";
+	public static final String AUTH_CODE_SUBMIT_ATTEMPT = "submitAttempt";
+	public static final String REGENERATE_ATTEMPT = "regenerateAttempt";
+	public static final String CURRENT_SUBMIT_ATTEMPT = "currentSubmitAttempt";
+	public static final String CURRENT_REGENERATE_ATTEMPT = "currentRegenerateAttempt";
 }
