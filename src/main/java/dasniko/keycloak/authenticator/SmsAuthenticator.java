@@ -61,7 +61,7 @@ public class SmsAuthenticator implements Authenticator {
 				authSession.setAuthNote(SmsConstants.CURRENT_SUBMIT_ATTEMPT,"1");
 			}
 			//check for submit attempt return if error exceed limit
-			if(Integer.parseInt(authSession.getAuthNote(SmsConstants.CURRENT_SUBMIT_ATTEMPT)) > Integer.parseInt(config.getConfig().get(SmsConstants.AUTH_CODE_SUBMIT_ATTEMPT))){
+			if(Integer.parseInt(authSession.getAuthNote(SmsConstants.CURRENT_SUBMIT_ATTEMPT)) >= Integer.parseInt(config.getConfig().get(SmsConstants.AUTH_CODE_SUBMIT_ATTEMPT))){
 				context.failureChallenge(AuthenticationFlowError.INVALID_CLIENT_SESSION,
 					context.form().setError("smsAuthCodeExceedSubmitLimit")
 						.createErrorPage(Response.Status.BAD_REQUEST));
