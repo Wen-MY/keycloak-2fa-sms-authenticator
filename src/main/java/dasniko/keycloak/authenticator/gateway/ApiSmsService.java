@@ -34,13 +34,15 @@ public class ApiSmsService implements SmsService {
 			try(CloseableHttpResponse response = httpClient.execute(request)) {
 				log.info("API request: " + apiUrl);
 				if (response.getStatusLine().getStatusCode() == 200) {
-					log.info("Sent SMS to " + phoneNumber + " API response: " + response.getEntity().toString());
+					log.info("Sent SMS to " + phoneNumber + " API response: " + response.getEntity().getContent().toString());
 				} else {
 					log.error("Failed to send message to " + phoneNumber + " with answer: " + response.getEntity().toString() + " Validate your config.");
+					throw new SmsServiceException("Failed to send SMS to " + phoneNumber + ". Code: " + response.getStatusLine().getStatusCode());
 				}
 			}
 		} catch (Exception e) {
-			log.error("Failed to make request to "+ apiUrl, e);
+			log.error("Failed to make API request to "+ apiUrl, e);
+			throw new SmsServiceException(e.getMessage());
 		}
 	}
 	private String jsonRequest(String phoneNumber, String senderId, String message) {

@@ -57,15 +57,19 @@
 			var currentTime = new Date().getTime();
 			let remainingTimeInSeconds = Math.ceil(((ttl*1000) - (currentTime - lastGenerationTime))/1000)//check is the code still valid
             var countdownNumber = document.getElementById('countdownNumber');
-            countdownNumber.innerHTML = remainingTimeInSeconds + 's';
 
+            var minutes = Math.floor(remainingTimeInSeconds / 60);
+            var seconds = remainingTimeInSeconds % 60;
+            if(seconds < 10) seconds = '0' + seconds;
+            //countdownNumber.innerHTML = remainingTimeInSeconds + 's';
+			countdownNumber.innerHTML = minutes + ':' + seconds;
             if (remainingTimeInSeconds > 0) {
                 setTimeout(function () {
 					updateCountdown(lastGenerationTime); // Update every second
                 	console.log("Time left to live :" + remainingTimeInSeconds);
 			},1000);
             } else {
-                countdownNumber.textContent = '0s'; // Optionally, clear the countdown text when it reaches 0
+                countdownNumber.textContent = 'Code Expired'; // Optionally, clear the countdown text when it reaches 0
             }
         }
         // Call the function to check and enable/disable the button on page load

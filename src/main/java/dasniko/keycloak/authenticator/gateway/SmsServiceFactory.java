@@ -18,11 +18,17 @@ public class SmsServiceFactory {
 
 	public static SmsService get(Map<String, String> config) {
 		//log.info(String.format("A new SMS Service Factory is created"));
-		if (Boolean.parseBoolean(config.getOrDefault(SmsConstants.SIMULATION_MODE, "false"))) {
-			return (phoneNumber, message ,session) ->
-				log.warn(String.format("***** SIMULATION MODE ***** Would send SMS to %s with text: %s", phoneNumber, message));
-		} else {
-			return new ApiSmsService(config);
+		try {
+			if (Boolean.parseBoolean(config.getOrDefault(SmsConstants.SIMULATION_MODE, "false"))) {
+				return (phoneNumber, message, session) ->
+					log.warn(String.format("***** SIMULATION MODE ***** Would send SMS to %s with text: %s", phoneNumber, message));
+			} else {
+				return new ApiSmsService(config);
+			}
+		}catch (SmsServiceException e){
+			return (phoneNumber, message, session) -> {
+				throw new SmsServiceException(e.getMessage());
+			};
 		}
 	}
 

@@ -60,7 +60,13 @@ public class SmsAuthenticator implements Authenticator {
 			if(authSession.getAuthNote(SmsConstants.CURRENT_SUBMIT_ATTEMPT) == null){
 				authSession.setAuthNote(SmsConstants.CURRENT_SUBMIT_ATTEMPT,"1");
 			}
-
+			//check for submit attempt return if error exceed limit
+			if(Integer.parseInt(authSession.getAuthNote(SmsConstants.CURRENT_SUBMIT_ATTEMPT)) > Integer.parseInt(config.getConfig().get(SmsConstants.AUTH_CODE_SUBMIT_ATTEMPT))){
+				context.failureChallenge(AuthenticationFlowError.INVALID_CLIENT_SESSION,
+					context.form().setError("smsAuthCodeExceedSubmitLimit")
+						.createErrorPage(Response.Status.BAD_REQUEST));
+				return;
+			}
 			context.challenge(context
 				.form()
 				.setAttribute("ttr",cooldownInterval)
@@ -186,8 +192,8 @@ public class SmsAuthenticator implements Authenticator {
 		authSession.setAuthNote(SmsConstants.CODE_TTL,Long.toString(currentTime + (ttl * 1000)));
 		authSession.setAuthNote(SmsConstants.CODE_TTR,Long.toString(currentTime + (cooldownInterval * 1000)));
 		authSession.setAuthNote(SmsConstants.LAST_GENERATION_TIME, Long.toString(currentTime));
-		if(authSession.getAuthNote(SmsConstants.CURRENT_SUBMIT_ATTEMPT) != null){
-			authSession.setAuthNote(SmsConstants.CURRENT_SUBMIT_ATTEMPT,"0");
+		if(authSession.getAuthNote(SmsConstants.CURRENT_SUBMIT_ATTEMPT) == null){
+			authSession.setAuthNote(SmsConstants.CURRENT_SUBMIT_ATTEMPT,"1");
 		}
 		if(authSession.getAuthNote(SmsConstants.CURRENT_REGENERATE_ATTEMPT) == null){
 			authSession.setAuthNote(SmsConstants.CURRENT_REGENERATE_ATTEMPT,"1");
