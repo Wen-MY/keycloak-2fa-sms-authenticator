@@ -17,7 +17,7 @@ public class ApiSmsService implements SmsService {
 	private final String senderId;
 
 	ApiSmsService(Map<String, String> config){
-		this.apiUrl = config.getOrDefault(SmsConstants.API_URL,"http://localhost") + "/sent";
+		this.apiUrl = config.getOrDefault(SmsConstants.API_URL,"http://localhost");
 		this.senderId = config.getOrDefault(SmsConstants.SENDER_ID,"Keycloak");
 
 
